@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Broadsheet">
+  <meta name="theme-color" content="#f6f7f8" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0e1013" media="(prefers-color-scheme: dark)">
+  <title>Broadsheet</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-180.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app" class="layout-split">
+    <!-- Sidebar: navigation and subreddits -->
+    <aside id="sidebar" aria-label="Navigation">
+      <div class="side-head">
+        <span class="brand">Broadsheet</span>
+        <button class="icon-btn" id="btn-settings" title="Settings" aria-label="Settings">
+          <svg viewBox="0 0 24 24"><path d="M12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Zm7.43-2.53c.04-.32.07-.64.07-.97s-.03-.66-.07-1l2.11-1.63a.5.5 0 0 0 .12-.64l-2-3.46a.5.5 0 0 0-.61-.22l-2.49 1a7.3 7.3 0 0 0-1.69-.98l-.38-2.65A.49.49 0 0 0 14 2h-4a.49.49 0 0 0-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1a.5.5 0 0 0-.61.22l-2 3.46a.49.49 0 0 0 .12.64L4.57 11c-.04.34-.07.67-.07 1s.03.65.07.97l-2.11 1.66a.49.49 0 0 0-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1.01c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.58 1.69-.98l2.49 1.01c.22.08.49 0 .61-.22l2-3.46a.5.5 0 0 0-.12-.64l-2.11-1.66Z"/></svg>
+        </button>
+      </div>
+      <form id="sub-search-form" class="search" role="search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5Zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14Z"/></svg>
+        <input id="sub-search" type="search" placeholder="Go to subreddit or search" autocomplete="off" autocapitalize="off" spellcheck="false">
+      </form>
+      <div id="sub-results" class="sub-results" hidden></div>
+      <nav class="side-nav">
+        <a data-nav="/" class="nav-item">Home</a>
+        <a data-nav="/r/popular" class="nav-item">Popular</a>
+        <a data-nav="/r/all" class="nav-item">All</a>
+      </nav>
+      <div class="side-label">Favorites</div>
+      <nav id="favorites" class="side-nav favorites"></nav>
+    </aside>
+    <div id="scrim" hidden></div>
+
+    <!-- Feed -->
+    <section id="feed-pane" aria-label="Posts">
+      <header class="pane-head" id="feed-head">
+        <div class="head-row">
+          <button class="icon-btn" id="btn-sidebar" title="Subreddits" aria-label="Toggle sidebar">
+            <svg viewBox="0 0 24 24"><path d="M3 6h18v2H3V6Zm0 5h18v2H3v-2Zm0 5h18v2H3v-2Z"/></svg>
+          </button>
+          <div class="feed-title">
+            <h1 id="feed-title">Home</h1>
+            <span id="feed-sub" class="muted"></span>
+          </div>
+          <button class="icon-btn" id="btn-fav" title="Favorite" aria-label="Toggle favorite" hidden>
+            <svg viewBox="0 0 24 24"><path d="m12 17.27 6.18 3.73-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27Z"/></svg>
+          </button>
+          <button class="icon-btn" id="btn-layout" title="Toggle list / gallery" aria-label="Toggle layout">
+            <svg viewBox="0 0 24 24" class="ico-grid"><path d="M3 3h8v8H3V3Zm10 0h8v8h-8V3ZM3 13h8v8H3v-8Zm10 0h8v8h-8v-8Z"/></svg>
+            <svg viewBox="0 0 24 24" class="ico-list"><path d="M3 5h18v3H3V5Zm0 5.5h18v3H3v-3ZM3 16h18v3H3v-3Z"/></svg>
+          </button>
+          <button class="icon-btn" id="btn-refresh" title="Refresh" aria-label="Refresh">
+            <svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.96 7.96 0 0 0 12 4a8 8 0 1 0 7.73 10h-2.08A6 6 0 1 1 12 6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35Z"/></svg>
+          </button>
+        </div>
+        <div class="head-row sorts" id="sorts"></div>
+      </header>
+      <div id="feed" class="feed" tabindex="-1"></div>
+    </section>
+
+    <div id="divider" role="separator" aria-orientation="vertical" aria-label="Resize panes"></div>
+
+    <!-- Detail -->
+    <section id="detail-pane" aria-label="Post">
+      <header class="pane-head" id="detail-head">
+        <div class="head-row">
+          <button class="icon-btn" id="btn-back" title="Back" aria-label="Back">
+            <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2Z"/></svg>
+          </button>
+          <button class="icon-btn" id="btn-expand" title="Full width (f)" aria-label="Toggle full width">
+            <svg viewBox="0 0 24 24" class="ico-expand"><path d="M7 14H5v5h5v-2H7v-3Zm-2-4h2V7h3V5H5v5Zm12 7h-3v2h5v-5h-2v3ZM14 5v2h3v3h2V5h-5Z"/></svg>
+            <svg viewBox="0 0 24 24" class="ico-collapse"><path d="M5 16h3v3h2v-5H5v2Zm3-8H5v2h5V5H8v3Zm6 11h2v-3h3v-2h-5v5Zm2-11V5h-2v5h5V8h-3Z"/></svg>
+          </button>
+          <div class="detail-crumb muted" id="detail-crumb"></div>
+          <a class="icon-btn" id="btn-open-reddit" title="Open on reddit.com" aria-label="Open on reddit.com" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2v-7h-2v7ZM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7Z"/></svg>
+          </a>
+          <button class="icon-btn" id="btn-share" title="Share" aria-label="Share">
+            <svg viewBox="0 0 24 24"><path d="M16 5l-1.42 1.42-1.59-1.59V16h-1.98V4.83L9.42 6.42 8 5l4-4 4 4Zm4 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V10a2 2 0 0 1 2-2h3v2H6v11h12V10h-3V8h3a2 2 0 0 1 2 2Z"/></svg>
+          </button>
+        </div>
+      </header>
+      <div id="detail" class="detail" tabindex="-1">
+        <div class="empty-state">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v2H4V6Zm0 5h16v2H4v-2Zm0 5h10v2H4v-2Z"/></svg>
+          <p>Select a post</p>
+          <p class="muted small">j / k to move, Enter to open, f for full width</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Lightbox -->
+  <div id="lightbox" hidden>
+    <div class="lb-track" id="lb-track"></div>
+    <button class="icon-btn lb-close" id="lb-close" aria-label="Close">
+      <svg viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+    </button>
+    <div class="lb-count" id="lb-count"></div>
+  </div>
+
+  <!-- Settings -->
+  <dialog id="settings">
+    <form method="dialog" class="settings-form">
+      <h2>Settings</h2>
+      <label class="row">Theme
+        <select name="theme">
+          <option value="auto">System</option>
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+        </select>
+      </label>
+      <label class="row">Text size
+        <select name="textSize">
+          <option value="15">Small</option>
+          <option value="17">Medium</option>
+          <option value="19">Large</option>
+          <option value="21">Extra large</option>
+        </select>
+      </label>
+      <label class="row check"><input type="checkbox" name="showNsfw"> Show NSFW media unblurred</label>
+      <label class="row check"><input type="checkbox" name="autoplay"> Autoplay videos (muted)</label>
+      <fieldset>
+        <legend>Reddit API client ID (optional)</legend>
+        <p class="muted small">If posts fail to load, Reddit is blocking anonymous requests. Create an app of type "installed app" at reddit.com/prefs/apps, then paste its client ID here. Requests then go through Reddit's official API.</p>
+        <input name="clientId" type="text" placeholder="e.g. a1B2c3D4e5F6g7" autocomplete="off" autocapitalize="off" spellcheck="false">
+      </fieldset>
+      <div class="actions">
+        <button value="cancel" class="btn">Cancel</button>
+        <button value="save" class="btn primary">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" role="status" hidden></div>
+  <script src="app.js"></script>
+</body>
+</html>
